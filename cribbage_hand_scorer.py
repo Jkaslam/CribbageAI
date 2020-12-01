@@ -13,7 +13,7 @@ def count_pairs(hand):
 # Counts all combinations of cards that add to 15
 def count_fifteens(hand):
     total_fifteens = 0
-    for i in range(1, 5):
+    for i in range(1, 6):
         combinations = list(itertools.combinations(set(hand), i))
         for j in range(len(combinations)):
             currSum = 0
