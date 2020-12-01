@@ -1,16 +1,5 @@
 import itertools
-import random
 import numpy as np
-
-vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
-suits = ['s', 'c', 'h', 'd']
-
-deck = list(itertools.product(vals, suits))
-
-random.shuffle(deck)
-
-for val, suit in deck[:5]:
-    print('The %s of %s' % (val, suit))
 
 # Counts the number of distinct pairs in a hand
 def count_pairs(hand):
@@ -91,7 +80,6 @@ def score_hand(hand, cut_card, crib):
     # Combine hand with cut card since for the rest of the counting
     # it doesn't matter
     hand.append(cut_card)
-    print(hand)
     
     # Each pair is worth 2
     total_score += 2 * count_pairs(hand)
@@ -106,7 +94,6 @@ def score_hand(hand, cut_card, crib):
 
     return total_score
 
-print("The total score of the hand is", score_hand(deck[:4], deck[4], False))
                 
             
                 
