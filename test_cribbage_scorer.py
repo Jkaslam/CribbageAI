@@ -36,10 +36,29 @@ def test_count_fifteens():
 
     hand3 = [(3, 'h'), (3, 's'), (4, 's'), (4, 'd'), (1, 'c')]
     assert chs.count_fifteens(hand3) == 1, "Should be 1"
+
+def test_count_runs():
+    hand1 = [(1, 'c'), (2, 'd'), (4, 'h'), (4, 's'), (4, 'd')]
+    random.shuffle(hand1)
+    assert chs.count_runs(hand1)[0] == 0, "Should be 0"
+
+    hand2 = [(1, 'c'), (1, 'd'), (2, 'h'), (3, 's'), (5, 'd')]
+    assert chs.count_runs(hand2)[0] == 2, "Should be 2"
+    assert chs.count_runs(hand2)[1] == 3, "Should be 3"
+
+    hand3 = [(1, 'c'), (2, 'd'), (3, 'h'), (4, 's'), (5, 'd')]
+    assert chs.count_runs(hand3)[0] == 1, "Should be 1"
+    assert chs.count_runs(hand3)[1] == 5, "Should be 5"
+
+    hand2 = [(1, 'c'), (1, 'd'), (2, 'h'), (3, 's'), (4, 'd')]
+    assert chs.count_runs(hand2)[0] == 2, "Should be 2"
+    assert chs.count_runs(hand2)[1] == 4, "Should be 4"
+
     
 if __name__ == "__main__":
     test_count_pairs()
     test_count_fifteens()
+    test_count_runs()
     print("Everything passed")
 
 

@@ -80,6 +80,9 @@ def score_hand(hand, cut_card, crib):
     # Combine hand with cut card since for the rest of the counting
     # it doesn't matter
     hand.append(cut_card)
+
+    #Sort the hand because that's required to count runs properly
+    hand.sort(key=lambda card: card[0])
     
     # Each pair is worth 2
     total_score += 2 * count_pairs(hand)
