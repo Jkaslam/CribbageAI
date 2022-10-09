@@ -40,10 +40,23 @@ def test_peg_runs():
     hand = [(2, 's'), (1, 'd'), (3, 'c')]
     assert cs.peg_runs(hand) == 3, "Should be 3"
 
-    
+def test_fift_or_thirty1():
+    hand = [(10, 's'), (5, 'd')]
+    assert cs.fift_or_thirty1(hand) == 2, "Should be 2"
+
+    hand = [(11, 's'), (5, 'd')]
+    assert cs.fift_or_thirty1(hand) == 2, "Should be 2"
+
+    hand = [(11, 's'), (3, 'd'), (2, 'd')]
+    assert cs.fift_or_thirty1(hand) == 2, "Should be 2"
+
+    hand = [(10, 's'), (11, 'd'), (13, 'd'), (1, 'd')]
+    assert cs.fift_or_thirty1(hand) == 2, "Should be 2"
+
 if __name__ == "__main__":
     test_peg_pairs()
     test_peg_runs()
+    test_fift_or_thirty1()
     print("Everything passed")
 
 
