@@ -2,12 +2,6 @@ import itertools
 import random
 import cribbage_scoring as cs
 
-
-vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
-suits = ['s', 'c', 'h', 'd']
-
-deck = list(itertools.product(vals, suits))
-
 def test_peg_pairs():
     hand = [(1, 's'), (1, 'd'), (1, 'c')]
     assert cs.peg_pairs(hand) == 6, "Should be 6"

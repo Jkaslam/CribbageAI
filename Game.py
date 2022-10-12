@@ -33,9 +33,7 @@ class Game():
     def discard_to_crib(self, cards):
         self.crib += self.players[self.turn_index].discard(cards)
         self.turn_index = (self.turn_index + 1) % len(self.players)
-        
-    
-                                
+                                        
     # Checks to see if any player has won and if they have, returns their index. 
     def check_win(self):
         for i in range(len(self.players)):
@@ -54,8 +52,23 @@ class Game():
     
     # Returns a list of cards the given player can play.
     def can_play(self, player_idx):
-        return filter(lambda x: x[0] + self.played_total <= 31,player_idx.get_hand())
+        return filter(lambda x: x[0] + self.played_total <= 31, player_idx.get_hand())
 
+    # Returns the cut card for the current hand.
+    def get_cut_card(self):
+        return self.cut_card
     
-    
-    
+    # Checks to see if the cut card is a jack. 
+    def check_nibs(self):
+        if (self.cut_card[0] == 11):
+            score[self.turn_index] += 2
+
+    # Returns the current list of cards that have been played this hand.
+    def get_cards_played(self):
+        return self.cards_played
+
+    def update_played_cards(self, card):
+        self.played_cards += [card]
+
+    def get_turn_index(self):
+        return self.turn_index
