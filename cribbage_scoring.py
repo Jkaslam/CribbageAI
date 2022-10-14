@@ -104,6 +104,8 @@ def score_hand(hand, cut_card, crib):
 
 # Returns 2 if the sum of cards played is 15 or 31.
 def fift_or_thirty1(cards):
+    if len(cards) == 1:
+        return 0
     total = 0
     for card in cards:
         total += min(10, card[0])
@@ -114,7 +116,7 @@ def fift_or_thirty1(cards):
 # Returns the score from the longest run (of length 3 or greater)
 # including the last card played.            
 def peg_runs(cards):
-    if len(cards) == 2:
+    if len(cards) < 3:
         return 0
     sorted_cards = sorted(cards, key=lambda card: card[0])
     adj_vals = []
@@ -129,8 +131,9 @@ def peg_runs(cards):
 def peg_pairs_helper(cards, num_pairs):
     if num_pairs == 4:
         return 12
-    top_val = cards[-1][0]
-    cards = cards[:-1]
+    if len(cards) > 0:
+        top_val = cards[-1][0]
+        cards = cards[:-1]
     if len(cards) > 0 and cards[-1][0] == top_val:
         return peg_pairs_helper(cards, num_pairs + 1)
     if num_pairs == 0:
@@ -141,7 +144,10 @@ def peg_pairs_helper(cards, num_pairs):
     
 # Returns the score from pairs that the most recently placed card creates. 
 def peg_pairs(cards):
-    return peg_pairs_helper(cards, 0)
+    if len(cards) == 1:
+        return 0
+    else:
+        return peg_pairs_helper(cards, 0)
 
 # Scores all pegging points from most recently played cards.
 def peg(cards):
