@@ -20,8 +20,10 @@ class Player():
         return self.hand
 
     def set_hand(self, new_hand):
-        if len(self.hand) == 0:
             self.hand = new_hand
 
     def set_hand_for_scoring(self, new_hand):
         self.hand_for_scoring = new_hand
+
+    def get_hand_for_scoring(self):
+        return self.hand_for_scoring

@@ -22,8 +22,10 @@ class Game():
     # Deals a new hand, 6 to each player and 1 cut card.
     def deal(self):
         random_cards = random.sample(self.deck, 6*len(self.players) + 1)
+        print(random_cards)
         for i in range(len(self.players)):
             self.players[i].set_hand(random_cards[6*i:6*i + 6])
+            print(self.players[i].get_hand())
         self.cut_card = random_cards[-1]
 
     # Counts pegging based on the most recently played card. 
@@ -49,18 +51,16 @@ class Game():
         return -1 
 
     # Computes the total of the current played cards.
-    def comp_played_total(self):
-        total = 0
-        for card in self.cards_played:
-            print(card)
-            total += min(card[0], 10)
-        return total
+    def get_played_total(self):
+        return self.played_total
     
     # Returns a list of cards the given player can play.
     def can_play(self, player_idx):
-        for card in self.players[player_idx].get_hand():
-            print(min(card[0], 10) + self.played_total)
-        return list(filter(lambda x: min(x[0], 10) + self.played_total <= 31, self.players[player_idx].get_hand()))
+        playable_cards = list(filter(lambda x: min(x[0], 10) + self.played_total <= 31, self.players[player_idx].get_hand()))
+        print("Current hand", self.players[player_idx].get_hand())
+        #print("Total played", self.played_total)
+        #print("Playable cards", playable_cards)
+        return playable_cards
 
     # Returns the cut card for the current hand.
     def get_cut_card(self):
@@ -69,7 +69,7 @@ class Game():
     # Checks to see if the cut card is a jack. 
     def check_nibs(self):
         if (self.cut_card[0] == 11):
-            self.score[self.turn_index] += 2
+            self.score[self.crib_index] += 2
 
     # Returns the current list of cards that have been played this hand.
     def get_cards_played(self):
@@ -78,7 +78,7 @@ class Game():
     # Adds a recently played card to the pile of cards that have been played. 
     def update_cards_played(self, card):
         self.cards_played += [card]
-        self.played_total += card[0]
+        self.played_total += min(card[0], 10)
 
     # Let's us know whose turn it is. 
     def get_turn_index(self):
@@ -92,7 +92,7 @@ class Game():
     # couldn't play.
     def call_go(self):
         self.next_turn()
-        self.score[self.turn_index] += 1
+        self.toggle_go()
 
     # Returns the current players.
     def get_players(self):
@@ -111,17 +111,30 @@ class Game():
     def toggle_go(self):
         self.go = not(self.go)
 
+    # Scores the hand of the given player as well as the crib if it's theirs.
     def score_hand(self, player_index):
-        hand_score = cs.score_hand(self.players[player_index].get_hand(), self.cut_card, False)
+        hand_score = cs.score_hand(self.players[player_index].get_hand_for_scoring(), self.cut_card, False)
         crib_score = 0
         if player_index == self.crib_index:
             crib_score = cs.score_hand(self.crib, self.cut_card, True)
         return hand_score + crib_score
 
+    # Returns the current score of the game
     def get_score(self):
         return self.score
 
+    # Resets the hand played if the total is 31 
     def check_thirty_one(self):
         if self.played_total == 31:
             print("in check thirty one")
             self.reset_cards_played()
+
+    # Gives the current crib to the next player. 
+    def update_crib_index(self):
+        self.crib_index = (self.crib_index + 1) % len(self.players)
+
+    def score_go(self):
+        self.score[self.turn_index] += 1
+
+    def set_initial_turn_index(self):
+        self.turn_index = (self.crib_index + 1) % len(self.players)

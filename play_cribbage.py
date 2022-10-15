@@ -10,6 +10,7 @@ players = [player1, player2]
 game = Game.Game(players)
 
 while game.check_win() == -1:
+    print("Dealing.")
     game.deal()
 
     # Discard to the crib
@@ -31,27 +32,25 @@ while game.check_win() == -1:
         print("Your hand is", hand)
 
     # Cut the deck, choose the cut card and check for nibs.
-    print("The cut card is", game.get_cut_card()) 
+    print("The cut card is", game.get_cut_card())
+
+    
     game.check_nibs()
     winner = game.check_win()
 
     if winner != -1:
         break
 
+    game.set_initial_turn_index()
+    
+    # Continue while at least one of the players has cards left in their hand. 
     while sum(map(lambda x: len(x.get_hand()), game.get_players())) > 0:
         if winner != -1:
             break
         # Gameplay
-        while len(game.can_play(0)) != 0 or len(game.can_play(1)) != 0:
-            if (len(game.can_play(game.get_turn_index())) == 0 and not(game.check_go())):
-                print("Go!")
-                game.call_go()
-                
-            winner = game.check_win()
-            if winner != -1:
-                break
+        while len(game.can_play(0)) + len(game.can_play(1)) != 0:
             print("It's player", game.get_turn_index(), "turn")
-            print("The cards played are", game.get_cards_played(), "and their total sum is", game.comp_played_total())
+            print("The cards played are", game.get_cards_played(), "and their total sum is", game.get_played_total())
             message = "Choose a card to play from" + str(game.can_play(game.get_turn_index()))
             card = input(message)
             card = (int(re.findall("\d+", card)[0]), re.findall("\D+", card)[0])
@@ -60,24 +59,33 @@ while game.check_win() == -1:
             game.update_score()
             game.check_thirty_one()
             print("The current score is: ", game.get_score())
-
-            if (len(game.can_play(game.get_turn_index())) == 0 and not(game.check_go())):
-                print("Player", game.get_turn_index(), "called Go!")
-                game.call_go()
                 
             winner = game.check_win()
 
             if winner != -1:
                 break
             if not(game.check_go()):
-                game.next_turn()
-        
+               game.next_turn()
+               
+            if (len(game.can_play(game.get_turn_index())) == 0 and not(game.check_go())):
+                print("Go!")
+                game.call_go()
+
+        if game.check_go():
+            game.toggle_go()
+            if game.get_played_total() != 31:
+                game.score_go()
+            game.next_turn()
+            
+        print("Resetting cards")
         game.reset_cards_played()
+        
         
     for i in range(len(game.get_players())):
         game.score_hand(i)
         winner = game.check_win()
         if winner != -1:
             break
+    game.update_crib_index()
     print("End of hand")
 print("The winner is player", winner, "with a score of", game.get_score())
