@@ -47,7 +47,8 @@ while game.check_win() == -1:
     while sum(map(lambda x: len(x.get_hand()), game.get_players())) > 0:
         if winner != -1:
             break
-        # Gameplay
+
+        # Gameplay for a single turn as long as at least one player still has cards to play. 
         while len(game.can_play(0)) + len(game.can_play(1)) != 0:
             print("It's player", game.get_turn_index(), "turn")
             print("The cards played are", game.get_cards_played(), "and their total sum is", game.get_played_total())
@@ -80,7 +81,7 @@ while game.check_win() == -1:
         print("Resetting cards")
         game.reset_cards_played()
         
-        
+    # Scores the players' hands after a round of cribbage. 
     for i in range(len(game.get_players())):
         game.score_hand(i)
         winner = game.check_win()

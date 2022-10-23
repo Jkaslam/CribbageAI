@@ -6,6 +6,7 @@ import cribbage_scoring as cs
 vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 suits = ['s', 'c', 'h', 'd']
 
+# The model for a cribbage game between two players. 
 class Game():
     def __init__(self, players):
         self.players = players
@@ -133,8 +134,11 @@ class Game():
     def update_crib_index(self):
         self.crib_index = (self.crib_index + 1) % len(self.players)
 
+    # Adds 1 to the current player's score if the other player called go
+    # and the current player can't make 31. 
     def score_go(self):
         self.score[self.turn_index] += 1
 
+    # Sets the starting turn index. 
     def set_initial_turn_index(self):
         self.turn_index = (self.crib_index + 1) % len(self.players)
