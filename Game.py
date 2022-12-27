@@ -1,4 +1,5 @@
 import player
+import RandomAgent
 import itertools
 import random
 import cribbage_scoring as cs
@@ -25,6 +26,7 @@ class Game():
         random_cards = random.sample(self.deck, 6*len(self.players) + 1)
         print(random_cards)
         for i in range(len(self.players)):
+            print("testing deal", random_cards[6*i:6*i + 6])
             self.players[i].set_hand(random_cards[6*i:6*i + 6])
             print(self.players[i].get_hand())
         self.cut_card = random_cards[-1]
@@ -36,9 +38,9 @@ class Game():
     # Discards two cards from the current player's hand to the crib.
     # Also saves the 4 chosen cards to the player's final hand for
     # scoring.
-    def discard_to_crib(self, cards):
+    def discard_to_crib(self):
         curr_player = self.players[self.turn_index]
-        self.crib += curr_player.discard(cards)
+        self.crib += curr_player.discard(self.get_state(self.turn_index))
         curr_player.set_hand_for_scoring(curr_player.get_hand())
         self.turn_index = (self.turn_index + 1) % len(self.players)
                                         
@@ -142,3 +144,8 @@ class Game():
     # Sets the starting turn index. 
     def set_initial_turn_index(self):
         self.turn_index = (self.crib_index + 1) % len(self.players)
+
+    # Returns the game's current state.
+    def get_state(self, turn_idx):
+        return [self.cut_card, self.cards_played, self.played_total, self.can_play(turn_idx)]
+

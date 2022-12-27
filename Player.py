@@ -23,8 +23,9 @@ class Player(ABC):
     def get_hand(self):
         return self.hand
 
+    # Sets a players hand for updating a hand after cards are played or discarded. 
     def set_hand(self, new_hand):
-            self.hand = new_hand
+        self.hand = new_hand
 
     # Sets the player's original full hand before any cards
     # are played or discarded. 
