@@ -39,7 +39,7 @@ for curr_game_num in range(num_games):
             hand = ""
             for card in curr_player.get_hand():
                 hand += str(card[0]) + card[1] + " "
-            print("Your hand is", hand)
+            print("You discarded and your hand is now", hand)
 
         # Cut the deck, choose the cut card and check for nibs.
         print("The cut card is", game.get_cut_card())
@@ -60,46 +60,51 @@ for curr_game_num in range(num_games):
 
             # Gameplay for a single turn as long as at least one player still has cards to play. 
             while len(game.can_play(0)) + len(game.can_play(1)) != 0:
-                curr_player = players[game.get_turn_index()]
-                print("It's player", game.get_turn_index(), "turn")
-                print("The cards played are", game.get_cards_played(), "and their total sum is", game.get_played_total())
-                
-                card = curr_player.play(game.get_state(game.get_turn_index()))
-            
-                print(card)
-                game.update_cards_played(card)
-                game.update_score()
-                game.check_thirty_one()
-                print("The current score is: ", game.get_score())
-                
                 winner = game.check_win()
-
                 if winner != -1:
                     break
-                if not(game.check_go()):
-                   game.next_turn()
-               
-                if (len(game.can_play(game.get_turn_index())) == 0 and not(game.check_go())):
-                    print("Go!")
-                    game.call_go()
-
-            if game.check_go():
-                game.toggle_go()
-                if game.get_played_total() != 31:
-                    game.score_go()
+                
+                curr_player = players[game.get_turn_index()]
+                print("It's player", game.get_turn_index(), "turn")
+                print("Player 0's hand is:", players[0].get_hand())
+                print("Player 1's hand is:", players[1].get_hand())
+                print("The current score is:", game.get_score())
+                print("The cards played are", game.get_cards_played(), "and their total sum is", game.get_played_total())
+                
+                # The current player can play
+                if (len(game.can_play(game.get_turn_index())) > 0):
+                    card = curr_player.play(game.get_state(game.get_turn_index()))
+            
+                    print(card)
+                    game.update_cards_played(card)
+                    game.update_score()
+                    
+                    # Enter here if the last card played makes the score 31. 
+                    if game.check_thirty_one():
+                        print("We got a 31.")
+                    
+                
+                # The current player cannot play
+                else:
+                    if not(game.check_go()):
+                        game.toggle_go()
+                        game.score_go()
                 game.next_turn()
+                    
             
             print("Resetting cards")
             game.reset_cards_played()
+            game.reset_go() 
         
         # Scores the players' hands after a round of cribbage. 
         for i in range(len(game.get_players())):
-            game.score_hand(i)
+            # Disabled scoring the hand since we're only interest in training game play.
+            #game.score_hand(i)
             winner = game.check_win()
             if winner != -1:
                 break
         game.update_crib_index()
         print("End of hand")
     print("The winner is player", winner, "with a score of", game.get_score())
-    history.append([winner, math.abs(game.get_score()[0] - game.get_score()[1])])
+    history.append([winner, abs(game.get_score()[0] - game.get_score()[1])])
 print(history)

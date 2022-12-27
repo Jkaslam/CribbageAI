@@ -24,11 +24,11 @@ class Game():
     # Deals a new hand, 6 to each player and 1 cut card.
     def deal(self):
         random_cards = random.sample(self.deck, 6*len(self.players) + 1)
-        print(random_cards)
+        #print(random_cards)
         for i in range(len(self.players)):
-            print("testing deal", random_cards[6*i:6*i + 6])
+            #print("testing deal", random_cards[6*i:6*i + 6])
             self.players[i].set_hand(random_cards[6*i:6*i + 6])
-            print(self.players[i].get_hand())
+            #print(self.players[i].get_hand())
         self.cut_card = random_cards[-1]
 
     # Counts pegging based on the most recently played card. 
@@ -60,7 +60,7 @@ class Game():
     # Returns a list of cards the given player can play.
     def can_play(self, player_idx):
         playable_cards = list(filter(lambda x: min(x[0], 10) + self.played_total <= 31, self.players[player_idx].get_hand()))
-        print("Current hand", self.players[player_idx].get_hand())
+        #print("Current hand", self.players[player_idx].get_hand())
         #print("Total played", self.played_total)
         #print("Playable cards", playable_cards)
         return playable_cards
@@ -129,8 +129,10 @@ class Game():
     # Resets the hand played if the total is 31 
     def check_thirty_one(self):
         if self.played_total == 31:
-            print("in check thirty one")
+            #print("in check thirty one")
             self.reset_cards_played()
+            return True
+        return False
 
     # Gives the current crib to the next player. 
     def update_crib_index(self):
@@ -139,7 +141,11 @@ class Game():
     # Adds 1 to the current player's score if the other player called go
     # and the current player can't make 31. 
     def score_go(self):
-        self.score[self.turn_index] += 1
+        self.score[(self.turn_index + 1) % len(self.players)] += 1
+
+    # Resets the go called boolean to 0.
+    def reset_go(self):
+        self.go = False
 
     # Sets the starting turn index. 
     def set_initial_turn_index(self):
