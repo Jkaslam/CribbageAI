@@ -10,7 +10,7 @@ player1 = RandomAgent.RandomAgent()
 player2 = RandomAgent.RandomAgent()
 
 # The number of games you want to train your agent with. 
-num_games = 5
+num_episodes = 5
 
 # List of the indices of the winning player for each game and the spread.
 history = []
@@ -18,7 +18,7 @@ history = []
 
 players = [player1, player2]
 
-for curr_game_num in range(num_games):
+for episode in range(num_episodes):
 
     game = Game.Game(players)
 
