@@ -60,6 +60,7 @@ class Game():
     # Returns a list of cards the given player can play.
     def can_play(self, player_idx):
         playable_cards = list(filter(lambda x: min(x[0], 10) + self.played_total <= 31, self.players[player_idx].get_hand()))
+        playable_cards.sort(key = lambda x: x[0])
         #print("Current hand", self.players[player_idx].get_hand())
         #print("Total played", self.played_total)
         #print("Playable cards", playable_cards)
@@ -151,7 +152,22 @@ class Game():
     def set_initial_turn_index(self):
         self.turn_index = (self.crib_index + 1) % len(self.players)
 
-    # Returns the game's current state.
+    # Returns the game's current state for playing (includes names of cards).
     def get_state(self, turn_idx):
         return [self.cut_card, self.cards_played, self.played_total, self.can_play(turn_idx)]
+
+    # Returns the game's current state for training.
+    def get_train_state(self, turn_idx):
+        zeroes = [0] * (7 - len(self.cards_played))
+        played = [x[0] for x in self.cards_played]
+        played = played + zeroes
+        hand = [x[0] for x in self.can_play(turn_idx)]
+        hand = hand + ([0] * (4 - len(hand)))
+        state = tuple(played + hand + [self.cut_card[0]])
+        return state
+        
+    # Returns the (signed) score differential from the point of view of the given player.
+    def get_score_diff(self, turn_idx):
+        return self.get_score()[turn_idx] - self.get_score()[(turn_idx + 1) % len(self.players)]    
+        
 
