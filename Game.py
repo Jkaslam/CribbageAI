@@ -49,8 +49,6 @@ class Game():
         for i in range(len(self.players)):
             if self.score[i] > 120:
                 return i
-            else:
-                return -1
         return -1 
 
     # Computes the total of the current played cards.

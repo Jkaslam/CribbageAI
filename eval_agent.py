@@ -6,6 +6,7 @@ import re
 
 # Player 1 is the type of agent you want to train.
 player1 = QTableAgent.QTableAgent()
+player1.load_q_table()
 
 # Player 2 is the type of agent you want to train against. 
 player2 = RandomAgent.RandomAgent()
@@ -14,7 +15,8 @@ player2 = RandomAgent.RandomAgent()
 num_episodes = 10000
 
 # List of the indices of the winning player for each game and the spread.
-history = []
+game_history = []
+differential_history = []
 
 
 players = [player1, player2]
@@ -23,10 +25,7 @@ for episode in range(num_episodes):
     if (episode % 1000) == 0:
         print("In episode", episode)
     game = Game.Game(players)
-    reward = 0
-    old_state = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    new_state = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    action = 0
+    
     while game.check_win() == -1:
         #print("Dealing.")
         game.deal()
@@ -78,15 +77,7 @@ for episode in range(num_episodes):
                 
                 # The current player can play
                 if (len(game.can_play(game.get_turn_index())) > 0):
-                    if game.get_turn_index() == 0:
-                       reward = game.get_score_diff(0)
-                       new_state = game.get_train_state(0)
-                       curr_player.train_update(old_state, action, new_state, reward)
-                       action = curr_player.train_action(new_state, episode)
-                       card = curr_player.train_play(game.can_play(0), action)
-                       old_state = new_state
-                    else:
-                        card = curr_player.play(game.get_state(game.get_turn_index()))
+                    card = curr_player.play(game.get_state(game.get_turn_index()))
             
                     #print(card)
                     game.update_cards_played(card)
@@ -95,12 +86,17 @@ for episode in range(num_episodes):
                     # Enter here if the last card played makes the score 31. 
                     game.check_thirty_one()
                         #print("We got a 31.")
-                    
+                    winner = game.check_win()
+                    if winner != -1:
+                        break 
                 
                 # The current player cannot play
                 elif not(game.check_go()):
                     game.toggle_go()
                     game.score_go()
+                    winner = game.check_win()
+                    if winner != -1:
+                        break
                 game.next_turn()
                     
             
@@ -118,6 +114,7 @@ for episode in range(num_episodes):
         game.update_crib_index()
         #print("End of hand")
     #print("The winner is player", winner, "with a score of", game.get_score())
-    #history.append([winner, abs(game.get_score()[0] - game.get_score()[1])])
-#print(history)
-player1.save_q_table()
+    game_history.append(winner)
+    differential_history.append(abs(game.get_score()[0] - game.get_score()[1]))
+print("The Q-table agent won", game_history.count(0), "out of", num_episodes)
+print(sum(differential_history)/len(differential_history))

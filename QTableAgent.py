@@ -116,7 +116,7 @@ class QTableAgent(Player):
     
    # Loads the q_table from a file.
     def load_q_table(self):
-        with open("saved/agents/q_table.pkl", "wb") as f:
+        with open("saved_agents/q_table.pkl", "rb") as f:
             self.q_table = pickle.load(f) 
 
  
